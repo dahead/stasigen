@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Examples\dh\blog\stasigen.md" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="markdig" Version="0.26.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Spectre.Console" Version="0.43.0" />
