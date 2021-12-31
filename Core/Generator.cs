@@ -124,9 +124,7 @@ namespace stasigen.Core
 
 						// output
 						if (opt.Verbosity != Verbosity.Quiet)
-						{
 							AnsiConsole.WriteLine($"HTML { line } >>> { file }");
-						}
 
 						// write line to output
 						if (!string.IsNullOrEmpty(result))
