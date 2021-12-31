@@ -13,13 +13,12 @@ namespace stasigen.Commands
 		{
 
 			[CommandOption("-p|--path")]
-			[Description("")]
-			public string Path { get; set; }
+			[Description("The path from where to import the Markdown files.")]
+			public string InputPath { get; set; }
 
-			[CommandOption("-r|--recursive")]
-			[Description("")]
-			[DefaultValue(true)]
-			public bool NoRestore { get; set; }
+			[CommandOption("-o|--output")]
+			[Description("The output path for the HTML files.")]
+			public string OutputPath { get; set; }
 
 			[CommandOption("-v|--verbosity <VERBOSITY>")]
 			[Description("Set the verbosity level. Allowed values are q[grey]uiet[/], m[grey]inimal[/], n[grey]ormal[/], d[grey]etailed[/], and diag[grey]nostic[/].")]
@@ -32,25 +31,28 @@ namespace stasigen.Commands
 		{
 			// SettingsDumper.Dump(settings);
 
+
+
+			if (string.IsNullOrEmpty(settings.InputPath))
+			{
+				settings.InputPath = System.Environment.CurrentDirectory;
+				AnsiConsole.WriteLine($"No path given. Using current directory {settings.InputPath} instead.");
+			}
+
+			if (!System.IO.Directory.Exists(settings.InputPath))
+			{
+				AnsiConsole.WriteLine($"Path {settings.InputPath} not found! Exiting.");
+				return -1;
+			}
+
+
+			// Start generating output
+			Generator.Start(settings);
+
 			if (settings.Verbosity > 0)
 			{
 				AnsiConsole.MarkupLine("[green]Done![/]");
 			}
-
-			if (string.IsNullOrEmpty(settings.Path))
-			{
-				settings.Path = System.Environment.CurrentDirectory;
-				AnsiConsole.WriteLine($"No path given. Using current directory {settings.Path} instead.");
-			}
-
-			if (!System.IO.Directory.Exists(settings.Path))
-			{
-				AnsiConsole.WriteLine($"Path {settings.Path} not found! Exiting.");
-				return -1;
-			}
-
-			// Start generating output
-			Generator.Start(settings);
 
 			// todo: return something useful?
 			return 0;

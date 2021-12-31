@@ -1,3 +1,5 @@
-This is a ""embedding test""
+<p>This is a <cite>embedding test</cite></p>
 
-![youtube.com](https://www.youtube.com/watch?v=mswPy5bt3TQ)
+
+<p><iframe src="https://www.youtube.com/embed/mswPy5bt3TQ" class="youtube" width="500" height="281" frameborder="0" allowfullscreen=""></iframe></p>
+

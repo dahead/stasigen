@@ -1,6 +1,9 @@
-﻿$css:main.css
-
-# daheads blog
+<link rel="stylesheet" type="text/css" href="css/main.css">
 
 
-![]($img:logo.png)
+<h1 id="daheads-blog">daheads blog</h1>
+
+
+
+<p><img src="img/logo.png" alt="" /></p>
+

@@ -1,68 +1,26 @@
-﻿$css:main.css
-$header
+<link rel="stylesheet" type="text/css" href="css/main.css">
 
-
-
-Letzte Artikel
--------------
-{{ display_posts }}
+<link rel="stylesheet" type="text/css" href="css/main.css">
 
 
 
 
+<p>Letzte Artikel</p>
 
-This is a ""citation of someone""
+<hr />
 
-
-``` dies ist ein test ```
+<p>{{ display_posts }}</p>
 
 
 
 
 
 
-
-
-# This is a heading with an an attribute{#heading-link}
-
-# This is a heading # {#heading-link2}
-
-[This is a link](http://google.com){#a-link .myclass data-lang=fr data-value="This is a value"}
-
-This is a heading{#heading-link2}
+<p>This is a <cite>citation of someone</cite></p>
 
 
 
-
-
-
-- This is a list
-  This is a spoiler
-  - item1
-  - item2
-- A second item in the list
-
-
-
-
-Linkstests:
-
-This is a http://www.google.com URL and https://www.google.com
-This is a ftp://test.com
-And a mailto:email@toto.com
-And a tel:+1555123456
-And a plain www.google.com
-
-
-
-
-```
-    public override int Execute(CommandContext context, Settings settings)
-    {
-        SettingsDumper.Dump(settings);
-        return 0;
-    }
-```
+<p><code>dies ist ein test</code></p>
 
 
 
@@ -70,16 +28,107 @@ And a plain www.google.com
 
 
 
-Impressum
--------------
-
-``` dies ist ein test ```
-
-# This is an H1
-
-## This is an H2
-
-###### This is an H6
 
 
-$footer
+<h1 id="heading-link">This is a heading with an an attribute</h1>
+
+
+<h1 id="heading-link2">This is a heading</h1>
+
+
+<p><a href="http://google.com" id="a-link" class="myclass" data-lang="fr" data-value="This is a value">This is a link</a></p>
+
+
+<p id="heading-link2">This is a heading</p>
+
+
+
+
+
+
+
+<ul>
+<li>This is a list</li>
+</ul>
+
+<p>This is a spoiler</p>
+
+<ul>
+<li>item1</li>
+</ul>
+
+<ul>
+<li>item2</li>
+</ul>
+
+<ul>
+<li>A second item in the list</li>
+</ul>
+
+
+
+
+
+<p>Linkstests:</p>
+
+
+<p>This is a <a href="http://www.google.com">http://www.google.com</a> URL and <a href="https://www.google.com">https://www.google.com</a></p>
+
+<p>This is a <a href="ftp://test.com">ftp://test.com</a></p>
+
+<p>And a <a href="mailto:email@toto.com">email@toto.com</a></p>
+
+<p>And a <a href="tel:+1555123456">+1555123456</a></p>
+
+<p>And a plain <a href="http://www.google.com">www.google.com</a></p>
+
+
+
+
+
+<pre><code></code></pre>
+
+<pre><code>public override int Execute(CommandContext context, Settings settings)
+</code></pre>
+
+<pre><code>{
+</code></pre>
+
+<pre><code>    SettingsDumper.Dump(settings);
+</code></pre>
+
+<pre><code>    return 0;
+</code></pre>
+
+<pre><code>}
+</code></pre>
+
+<pre><code></code></pre>
+
+
+
+
+
+
+
+
+<p>Impressum</p>
+
+<hr />
+
+
+<p><code>dies ist ein test</code></p>
+
+
+<h1 id="this-is-an-h1">This is an H1</h1>
+
+
+<h2 id="this-is-an-h2">This is an H2</h2>
+
+
+<h6 id="this-is-an-h6">This is an H6</h6>
+
+
+
+<footer>(c) 2000 - 2021 by dahead</footer>
+

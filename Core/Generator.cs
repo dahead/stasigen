@@ -17,7 +17,7 @@ namespace stasigen.Core
 		public static void Start(GenerateCommand.Settings opt)
 		{
 
-			if ((opt.Path == String.Empty) || (!Directory.Exists(opt.Path)))
+			if ((opt.InputPath == String.Empty) || (!Directory.Exists(opt.InputPath)))
 			{
 				return;
 			}
@@ -39,8 +39,14 @@ namespace stasigen.Core
 
 			// var result = Markdown.ToHtml("This is a text with some *emphasis*", pipeline);
 
+			if (!System.IO.Directory.Exists(opt.OutputPath))
+			{
+				AnsiConsole.WriteLine($"Creating output path {opt.OutputPath}.");
+				System.IO.Directory.CreateDirectory(opt.OutputPath);
+			}
 
-			var files = FileHelper.GetFiles(opt.Path);
+
+			var files = FileHelper.GetFiles(opt.InputPath);
 			var files_md = files.Where(t => t.EndsWith(".md"));
 			var files_img = files.Where(t => t.EndsWith(".jpg") || t.EndsWith(".png"));
 			var files_css = files.Where(t => t.EndsWith(".css"));
@@ -75,7 +81,33 @@ namespace stasigen.Core
 				string[] lines = content.Split(Environment.NewLine);
 
 				// create new html output file
-				string newfn = Path.ChangeExtension(file, ".html");
+				string newfn = Path.GetFileName(file);
+				newfn = Path.ChangeExtension(newfn, ".html");
+
+				// Convert directory from
+				//
+				//	/home/dh/dev/test/site/generator/*
+				//									|___ Blog
+				//									|___ css
+				//									|___ img
+				//	to:
+				//
+				// 	/home/dh/sites/compiled/*
+				//							|___ Blog
+				//							|___ css
+				//							|___ img
+
+				string curdir = System.IO.Path.GetDirectoryName(file);
+				string addondir = curdir.Replace(opt.InputPath, string.Empty); // remove 
+
+				// settings: use output path
+				string newoutputdir = System.IO.Path.Combine(opt.OutputPath, addondir);
+
+				newfn = Path.Combine(newoutputdir, newfn);
+				string newfndir = Path.GetDirectoryName(newfn);
+				if (!System.IO.Directory.Exists(newfndir))
+					System.IO.Directory.CreateDirectory(newfndir);
+
 
 				// convert markdown to html and write it in the output file
 				using (StreamWriter sw = File.CreateText(newfn))

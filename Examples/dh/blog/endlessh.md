@@ -1,83 +1,168 @@
-﻿$header
+<link rel="stylesheet" type="text/css" href="../css/main.css">
 
-# endless
-endlessh ist ein Linux SSH Server der als Honeypot dient.
-Dabei gibt endlessh sehr, sehr langsam Anfragen an den Client zurueck.
 
-Das Repository auf [Github](https://github.com/skeeto/endlessh)
+<h1 id="endless">endless</h1>
 
-### Installation
+<p>endlessh ist ein Linux SSH Server der als Honeypot dient.</p>
 
-Die Installation von *endlessh* erfolgt unter Debian via ```apt-get install```.
+<p>Dabei gibt endlessh sehr, sehr langsam Anfragen an den Client zurueck.</p>
 
-``` sudo apt-get install endlessh -y ```
 
-Wird Debian Buster eingesetzt, muss die ```/etc/apt/sources.list``` um die Backports ergaenzt werden, ansonsten findet apt das Paket nicht. Bei Bullseye und neuer wird *endlessh* direkt ueber die Standard Paketquellen installiert.
+<p>Das Repository auf <a href="https://github.com/skeeto/endlessh">Github</a></p>
 
-### config
 
-Nun legen wir die config an:
+<h3 id="installation">Installation</h3>
 
-``` sudo nano /etc/endlessh/config ```
 
-Hier fuegen wir folgendes ein:
+<p>Die Installation von <em>endlessh</em> erfolgt unter Debian via <code>apt-get install</code>.</p>
 
-```
-    # The port on which to listen for new SSH connections.
-    Port 22
-    
-    # The endless banner is sent one line at a time. This is the delay
-    # in milliseconds between individual lines.
-    Delay 10000
-    
-    # The length of each line is randomized. This controls the maximum
-    # length of each line. Shorter lines may keep clients on for longer if
-    # they give up after a certain number of bytes.
-    MaxLineLength 32
-    
-    # Maximum number of connections to accept at a time. Connections beyond
-    # this are not immediately rejected, but will wait in the queue.
-    MaxClients 4096
 
-    # Set the detail level for the log.
-    #   0 = Quiet
-    #   1 = Standard, useful log messages
-    #   2 = Very noisy debugging information
-    LogLevel 0
-    
-    # Set the family of the listening socket
-    #   0 = Use IPv4 Mapped IPv6 (Both v4 and v6, default)
-    #   4 = Use IPv4 only
-    #   6 = Use IPv6 only
-    BindFamily 0
-```
+<p><code>sudo apt-get install endlessh -y</code></p>
 
-### Dienst anpassen
 
-Bevor jetzt der Dienst gestartet werden kann, muss noch die systemd Dienstkonfiguration bearbeitet werden:
+<p>Wird Debian Buster eingesetzt, muss die <code>/etc/apt/sources.list</code> um die Backports ergaenzt werden, ansonsten findet apt das Paket nicht. Bei Bullseye und neuer wird <em>endlessh</em> direkt ueber die Standard Paketquellen installiert.</p>
 
-``` sudo nano /etc/systemd/system/endlessh.service ```
 
-Siehe auch die Diskussion unter [Github](https://github.com/skeeto/endlessh/issues/39).
+<h3 id="config">config</h3>
 
-```
-    ## If you want Endlessh to bind on ports < 1024
-    ## 1) run:
-    ##     setcap 'cap_net_bind_service=+ep' /usr/local/bin/endlessh
-    ## 2) uncomment following line
-    AmbientCapabilities=CAP_NET_BIND_SERVICE
-    ## 3) comment following line
-    #PrivateUsers=true
-```
 
-### Start
+<p>Nun legen wir die config an:</p>
 
-Nun starten wir endlessh:
 
-``` sudo systemctl start endlessh ```
+<p><code>sudo nano /etc/endlessh/config</code></p>
 
-Anschliessend koennen wir via ``` netstat -tulpn ``` pruefen, ob sshd auf Port 2222 und endlessh auf Port 22 laeuft:
 
-![]($img:endlessh_syslog_netstat_tulpn.jpg)
+<p>Hier fuegen wir folgendes ein:</p>
 
-$footer
+
+<pre><code></code></pre>
+
+<pre><code># The port on which to listen for new SSH connections.
+</code></pre>
+
+<pre><code>Port 22
+</code></pre>
+
+
+<pre><code># The endless banner is sent one line at a time. This is the delay
+</code></pre>
+
+<pre><code># in milliseconds between individual lines.
+</code></pre>
+
+<pre><code>Delay 10000
+</code></pre>
+
+
+<pre><code># The length of each line is randomized. This controls the maximum
+</code></pre>
+
+<pre><code># length of each line. Shorter lines may keep clients on for longer if
+</code></pre>
+
+<pre><code># they give up after a certain number of bytes.
+</code></pre>
+
+<pre><code>MaxLineLength 32
+</code></pre>
+
+
+<pre><code># Maximum number of connections to accept at a time. Connections beyond
+</code></pre>
+
+<pre><code># this are not immediately rejected, but will wait in the queue.
+</code></pre>
+
+<pre><code>MaxClients 4096
+</code></pre>
+
+
+<pre><code># Set the detail level for the log.
+</code></pre>
+
+<pre><code>#   0 = Quiet
+</code></pre>
+
+<pre><code>#   1 = Standard, useful log messages
+</code></pre>
+
+<pre><code>#   2 = Very noisy debugging information
+</code></pre>
+
+<pre><code>LogLevel 0
+</code></pre>
+
+
+<pre><code># Set the family of the listening socket
+</code></pre>
+
+<pre><code>#   0 = Use IPv4 Mapped IPv6 (Both v4 and v6, default)
+</code></pre>
+
+<pre><code>#   4 = Use IPv4 only
+</code></pre>
+
+<pre><code>#   6 = Use IPv6 only
+</code></pre>
+
+<pre><code>BindFamily 0
+</code></pre>
+
+<pre><code></code></pre>
+
+
+<h3 id="dienst-anpassen">Dienst anpassen</h3>
+
+
+<p>Bevor jetzt der Dienst gestartet werden kann, muss noch die systemd Dienstkonfiguration bearbeitet werden:</p>
+
+
+<p><code>sudo nano /etc/systemd/system/endlessh.service</code></p>
+
+
+<p>Siehe auch die Diskussion unter <a href="https://github.com/skeeto/endlessh/issues/39">Github</a>.</p>
+
+
+<pre><code></code></pre>
+
+<pre><code>## If you want Endlessh to bind on ports &lt; 1024
+</code></pre>
+
+<pre><code>## 1) run:
+</code></pre>
+
+<pre><code>##     setcap 'cap_net_bind_service=+ep' /usr/local/bin/endlessh
+</code></pre>
+
+<pre><code>## 2) uncomment following line
+</code></pre>
+
+<pre><code>AmbientCapabilities=CAP_NET_BIND_SERVICE
+</code></pre>
+
+<pre><code>## 3) comment following line
+</code></pre>
+
+<pre><code>#PrivateUsers=true
+</code></pre>
+
+<pre><code></code></pre>
+
+
+<h3 id="start">Start</h3>
+
+
+<p>Nun starten wir endlessh:</p>
+
+
+<p><code>sudo systemctl start endlessh</code></p>
+
+
+<p>Anschliessend koennen wir via <code>netstat -tulpn</code> pruefen, ob sshd auf Port 2222 und endlessh auf Port 22 laeuft:</p>
+
+
+<p><img src="../img/endlessh_syslog_netstat_tulpn.jpg" alt="" /></p>
+
+
+<footer>(c) 2000 - 2021 by dahead</footer>
+
