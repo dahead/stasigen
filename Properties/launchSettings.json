@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "stasigen": {
+      "commandName": "Project",
+      "commandLineArgs": "generate --path C:\\Users\\dh\\source\\repos\\stasigen\\stasigen\\Examples"
+    }
+  }
+}

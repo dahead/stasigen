@@ -1,0 +1,1 @@
+﻿# stasigen - static site generator
