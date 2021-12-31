@@ -1,2 +1,3 @@
-<footer>(c) 2000 - 2021 by dahead</footer>
+﻿
 
+^^ (c) 2000 - 2021 by dahead

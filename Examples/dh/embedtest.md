@@ -1,5 +1,0 @@
-<p>This is a <cite>embedding test</cite></p>
-
-
-<p><iframe src="https://www.youtube.com/embed/mswPy5bt3TQ" class="youtube" width="500" height="281" frameborder="0" allowfullscreen=""></iframe></p>
-

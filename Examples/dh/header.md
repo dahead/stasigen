@@ -1,9 +1,3 @@
-<link rel="stylesheet" type="text/css" href="css/main.css">
-
-
-<h1 id="daheads-blog">daheads blog</h1>
-
-
-
-<p><img src="img/logo.png" alt="" /></p>
-
+﻿$css:main.css
+# daheads blog
+![]($img:logo.png)

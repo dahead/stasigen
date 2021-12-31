@@ -32,13 +32,14 @@ namespace stasigen.Commands
 			// SettingsDumper.Dump(settings);
 
 
-
+			// is input path given?
 			if (string.IsNullOrEmpty(settings.InputPath))
 			{
 				settings.InputPath = System.Environment.CurrentDirectory;
 				AnsiConsole.WriteLine($"No path given. Using current directory {settings.InputPath} instead.");
 			}
 
+			// does input path exist?
 			if (!System.IO.Directory.Exists(settings.InputPath))
 			{
 				AnsiConsole.WriteLine($"Path {settings.InputPath} not found! Exiting.");
