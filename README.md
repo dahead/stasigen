@@ -26,6 +26,8 @@ You just have to declare the images like:
 
 stasigen will then look for that file and create the appropiate Markdown syntax for this. This happens accordingly to css stylesheets.
 
+To see this in action look at the folder "Examples\dh\" and the "compiled" output "Examples\output" folder.
+
 ### Example 1:
 
 ``` 
