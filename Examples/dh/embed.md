@@ -3,3 +3,7 @@
 # EMBEDDING TEST 2
 
 # EMBEDDING TEST 3
+
+### death loop?
+
+[dynamic:embed.md]
