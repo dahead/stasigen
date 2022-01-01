@@ -6,13 +6,25 @@
 stasigen is short for static site generator. And yes, this is yet another static site generator.
 There seems to be an infinite number of these things, so here is another one.
 
+## Features
+
+- Stupid simple. Creates HTML files out of Markdown files.
+- Open source, .NET Core Framework, written in C#
+- Dynamic image and css file integration
+
 ## Why I wrote this
 
-The main purpose for this generator is to help myself document things during work where I mostly use a text editor for taking notes.
-Occasionally I have some screenshots laying around which I want to combine with the notes. So I could either use something like Microsoft Word (no thanks) or a Website editor like "nvu", "Dreamweaver" or alike. But these seem to big for the task and I like it simple - so I created stasigen.
+The main purpose for this generator is to help myself document things during work where I mostly use a text editor for taking notes. Occasionally I have some screenshots laying around which I want to combine with the notes. So I could either use something like a word processor or a website editor like. But these seem to big for the task at hand and I like to keep it simple - so I created stasigen.
 
-With stasigen you can create a folder structure without any limitations, place your Markdown files, put some images here and there.
-To link files with images stasigen uses its own "commands" which get replaced with some values.
+With stasigen you can create a folder structure without any restrictions to the application itself. That means you can place your Markdown files anythere you like. In your main documents folder or separated into sub folders for each topic. You can create a main image folder or put the images in the folders with your notes. Either way you can easily link them together without remembering any paths. stasigen does that for you.
+
+You just have to declare the images like:
+
+```
+[img:filename_of_the_image.jpg]
+```
+
+stasigen will then look for that file and create the appropiate Markdown syntax for this. This happens accordingly to css stylesheets.
 
 ### Example 1:
 
@@ -39,12 +51,6 @@ This command inserts the HTML img tag for the given image.
 
 ```
 
-## Features
-
-- Stupid simple. Creates HTML files out of Markdown files.
-- Open source, .NET Core Framework, written in C#
-- Dynamic image and css file integration
-
 ## Demo run
 
 ``` 
@@ -57,7 +63,7 @@ Thanks go out to:
 
 - xooxf the author of [Markdig](https://github.com/xoofx/markdig) the markdown parser I used.
 
-## Compile / requirements
+## Compilation
 
 This application requires mono or the .NET Framework 5 Core.
 
