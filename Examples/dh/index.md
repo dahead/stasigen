@@ -1,4 +1,4 @@
-﻿$header
+﻿[dynamic:header.md]
 
 
 Letzte Artikel
@@ -64,6 +64,9 @@ And a plain www.google.com
 ```
 
 
+# Dynamic Test
+
+[dynamic:embed.md]
 
 
 
@@ -81,4 +84,4 @@ Impressum
 ###### This is an H6
 
 
-$footer
+[dynamic:footer.md]
