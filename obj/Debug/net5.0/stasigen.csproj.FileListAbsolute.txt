@@ -18,3 +18,4 @@
 /home/dh/dev/csharp/stasigen/stasigen/stasigen/obj/Debug/net5.0/ref/stasigen.dll
 /home/dh/dev/csharp/stasigen/stasigen/stasigen/obj/Debug/net5.0/stasigen.pdb
 /home/dh/dev/csharp/stasigen/stasigen/stasigen/obj/Debug/net5.0/stasigen.genruntimeconfig.cache
+/home/dh/dev/csharp/stasigen/stasigen/stasigen/bin/Debug/net5.0/NLog.dll

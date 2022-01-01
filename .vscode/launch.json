@@ -14,7 +14,7 @@
 			"args": [
 				"generate",
 				// "--path",
-				// "/home/dh/dev/csharp/stasigen/stasigen/stasigen/Examples/",
+				"./Examples/",
 				// "--output",
 				// "/home/dh/dev/csharp/stasigen/stasigen/stasigen/Output/"
 			],

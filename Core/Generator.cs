@@ -32,6 +32,12 @@ namespace stasigen.Core
 				return result;
 			}
 
+			// retrieve full path instead of maybe relative paths like "./Examples"
+			var di = new System.IO.DirectoryInfo(opt.InputPath);
+			opt.InputPath = di.FullName;
+			if (!opt.InputPath.EndsWith("/"))
+				opt.InputPath = opt.InputPath + "/";
+
 			// Configure the pipeline with all advanced extensions active
 			var pipeline = new MarkdownPipelineBuilder()
 				.UseAdvancedExtensions()
@@ -49,6 +55,9 @@ namespace stasigen.Core
 				AnsiConsole.WriteLine($"Creating output path {opt.OutputPath}.");
 				System.IO.Directory.CreateDirectory(opt.OutputPath);
 			}
+
+			if (!opt.OutputPath.EndsWith("/"))
+				opt.OutputPath = opt.OutputPath + "/";
 
 			// get the important files in separate lists
 			var files = FileHelper.GetFiles(opt.InputPath);
@@ -106,7 +115,7 @@ namespace stasigen.Core
 						// images
 						if ((currentline.Contains("$img:")))
 						{
-							var newline = ParseImageTag(files_img, file, currentline);
+							var newline = ParseImageTag(files_img, newfn, currentline);
 							if (!string.IsNullOrEmpty(newline))
 								currentline = newline;
 						}
@@ -114,7 +123,7 @@ namespace stasigen.Core
 						// css style: $css:main.css >>> <link rel="stylesheet" href="styles.css">
 						if ((currentline.Contains("$css:")))
 						{
-							var newline = ParseCSSTag(files_css, file, currentline);
+							var newline = ParseCSSTag(files_css, newfn, currentline);
 							if (!string.IsNullOrEmpty(newline))
 								currentline = newline;
 						}
@@ -146,12 +155,13 @@ namespace stasigen.Core
 				var mdfn = Path.GetFileName(mdfile);
 				if (line.Contains(mdfn))
 				{
-					line = line.Replace("$dynamic:", string.Empty); // remove "command"
+					// line = line.Replace("$dynamic:", string.Empty); // remove "command"
 					var embed_content = File.ReadAllText(mdfile);
 					var embed_result = Markdown.ToHtml(embed_content, pipeline);
 					// AnsiConsole.WriteLine($"replacing line {line} with {embed_result} from {mdfile}");
 					// replace line
-					line = embed_result;
+					// line = embed_result;
+					return embed_result;
 				}
 			}
 			return line;
@@ -228,6 +238,7 @@ namespace stasigen.Core
 			// create new filename
 			string curdir = System.IO.Path.GetDirectoryName(file);
 			string addondir = curdir.Replace(intputpath, outputpath); // replace the paths 
+
 			newfn = Path.Combine(addondir, newfn);
 
 			// new filename directory

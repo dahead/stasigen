@@ -10,11 +10,20 @@ namespace stasigen.Commands
 	{
 		public sealed class Settings : CommandSettings
 		{
-			[CommandOption("-p|--path")]
+			// [CommandOption("-p|--path")]
+			// [Command]
+			// [Description("The path from where to import the Markdown files.")]
+			// public string InputPath { get; set; }
+
+			// [CommandOption("-o|--output")]
+			// [Description("The output path for the HTML files.")]
+			// public string InputPath { get; set; }
+
+			[CommandArgument(0, "<path>")]
 			[Description("The path from where to import the Markdown files.")]
 			public string InputPath { get; set; }
 
-			[CommandOption("-o|--output")]
+			[CommandArgument(1, "[output]")]
 			[Description("The output path for the HTML files.")]
 			public string OutputPath { get; set; }
 
@@ -23,6 +32,13 @@ namespace stasigen.Commands
 			[TypeConverter(typeof(VerbosityConverter))]
 			[DefaultValue(Verbosity.Quiet)]
 			public Verbosity Verbosity { get; set; }
+
+			public override ValidationResult Validate()
+			{
+				return !System.IO.Directory.Exists(InputPath)
+					? ValidationResult.Error($"Input path {InputPath} must exist!")
+					: ValidationResult.Success();
+			}
 		}
 
 		public override int Execute(CommandContext context, Settings settings)
@@ -31,19 +47,19 @@ namespace stasigen.Commands
 			if (settings.Verbosity > 0)
 				SettingsDumper.Dump(settings);
 
-			// is input path given?
-			if (string.IsNullOrEmpty(settings.InputPath))
-			{
-				settings.InputPath = System.Environment.CurrentDirectory;
-				AnsiConsole.WriteLine($"No path given. Using current directory {settings.InputPath} instead.");
-			}
+			// // is input path given?
+			// if (string.IsNullOrEmpty(settings.InputPath))
+			// {
+			// 	settings.InputPath = System.Environment.CurrentDirectory;
+			// 	AnsiConsole.WriteLine($"No path given. Using current directory {settings.InputPath} instead.");
+			// }
 
-			// does input path exist?
-			if (!System.IO.Directory.Exists(settings.InputPath))
-			{
-				AnsiConsole.WriteLine($"Path {settings.InputPath} not found! Exiting.");
-				return -1;
-			}
+			// // does input path exist?
+			// if (!System.IO.Directory.Exists(settings.InputPath))
+			// {
+			// 	AnsiConsole.WriteLine($"Path {settings.InputPath} not found! Exiting.");
+			// 	return -1;
+			// }
 
 			// Start generating output
 			var result = Generator.Start(settings);
