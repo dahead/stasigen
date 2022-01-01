@@ -43,7 +43,7 @@ This command inserts the HTML CSS stylesheet tag for the given stylesheet.
 ### Example 2:
 
 ``` 
-[css:logo.png]
+[img:logo.png]
 ```
 
 This command inserts the HTML img tag for the given image.
