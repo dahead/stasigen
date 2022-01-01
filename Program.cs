@@ -6,6 +6,7 @@ var app = new CommandApp();
 app.Configure(config =>
 {
 	config.SetApplicationName("stasigen");
+	config.SetApplicationVersion("1.0");
 	config.AddExample(new[] { "generate", "--path", "~/Documents/Website/staticsite" });
 	config.AddExample(new[] { "generate", "--verbosity", "3" });
 	config.ValidateExamples();

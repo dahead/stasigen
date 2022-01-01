@@ -14,30 +14,29 @@ namespace stasigen.Core
 	public static class Generator
 	{
 
-		public static void Start(GenerateCommand.Settings opt)
+		public record GeneratorResult
 		{
+			public string Error { get; set; }
+			public int ParsedMDFiles { get; set; }
+		}
 
+		public static GeneratorResult Start(GenerateCommand.Settings opt)
+		{
+			// result
+			GeneratorResult result = new GeneratorResult();
+
+			// check for input path
 			if ((opt.InputPath == String.Empty) || (!Directory.Exists(opt.InputPath)))
 			{
-				return;
+				result.Error = $"Input path {opt.InputPath} not found!";
+				return result;
 			}
 
-
-			// Console.WriteLine("Hello, World!");
-			// static site generator - stasigen
-			// create html files from *.md files
-			// stasigen --update /Examples/dh/
-			//  durch jedes Verzeichnis und aus *.md Dateien *.html machen.
-			// stasigen --add ??? oder lieber einfach manuell datei anlegen? simpler!
-
 			// Configure the pipeline with all advanced extensions active
-			// var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 			var pipeline = new MarkdownPipelineBuilder()
 				.UseAdvancedExtensions()
 				//.UseSyntaxHighlighting()
 				.Build();
-
-			// var result = Markdown.ToHtml("This is a text with some *emphasis*", pipeline);
 
 			// output path defaults
 			if (string.IsNullOrEmpty(opt.OutputPath))
@@ -64,12 +63,12 @@ namespace stasigen.Core
 			// thru each md file
 			foreach (var file in files_md)
 			{
-
 				// read content and split into single lines
 				string content = File.ReadAllText(file);
 				string[] lines = content.Split(Environment.NewLine);
 
-				string newfn = GetFilename(opt, file);
+				// create new filename for output
+				string newfn = GetOutputFilename(file, opt.InputPath, opt.OutputPath);
 
 				// convert markdown to html and write it in the output file
 				using (StreamWriter sw = File.CreateText(newfn))
@@ -80,62 +79,64 @@ namespace stasigen.Core
 					for (int i = 0; i < lines.Length; i++)
 					{
 						// get current line
-						var line = lines[i];
+						var currentline = lines[i];
 
 						// header
-						if ((line.ToLower().Contains("$header")))
-							line = line.Replace("$header", headercontent);
+						if (!string.IsNullOrEmpty(headercontent))
+						{
+							if ((currentline.ToLower().Contains("$header")))
+								currentline = currentline.Replace("$header", headercontent);
+						}
 
 						// footer
-						if ((line.ToLower().Contains("$footer")))
-							line = line.Replace("$footer", footercontent);
+						if (!string.IsNullOrEmpty(footercontent))
+						{
+							if ((currentline.ToLower().Contains("$footer")))
+								currentline = currentline.Replace("$footer", footercontent);
+						}
 
 						// dynamic: embed md file
-						if ((line.Contains("$dynamic:")))
+						if ((currentline.Contains("$dynamic:")))
 						{
-							var newline = ParseDynamicTag(pipeline, files_md, line);
+							var newline = ParseDynamicTag(pipeline, files_md, currentline);
 							if (!string.IsNullOrEmpty(newline))
-								line = newline;
+								currentline = newline;
 						}
 
 						// images
-						if ((line.Contains("$img:")))
+						if ((currentline.Contains("$img:")))
 						{
-							var newline = ParseImageTag(files_img, file, line);
+							var newline = ParseImageTag(files_img, file, currentline);
 							if (!string.IsNullOrEmpty(newline))
-								line = newline;
+								currentline = newline;
 						}
 
 						// css style: $css:main.css >>> <link rel="stylesheet" href="styles.css">
-						if ((line.Contains("$css:")))
+						if ((currentline.Contains("$css:")))
 						{
-							var newline = ParseCSSTag(files_css, file, line);
+							var newline = ParseCSSTag(files_css, file, currentline);
 							if (!string.IsNullOrEmpty(newline))
-								line = newline;
+								currentline = newline;
 						}
 
-						// todo:
-						// $navbar
-						// $posts.last(10)
-						// $posts.random(100)
-
 						// markdown
-						var result = Markdown.ToHtml(line, pipeline);
+						var parsedMD = Markdown.ToHtml(currentline, pipeline);
 
 						// output
 						if (opt.Verbosity != Verbosity.Quiet)
-							AnsiConsole.WriteLine($"HTML { line } >>> { file }");
+							AnsiConsole.WriteLine($"HTML { currentline } >>> { file }");
 
-						// write line to output
-						if (!string.IsNullOrEmpty(result))
+						// write only not empty strings to output (is this a good idea?)
+						if (!string.IsNullOrEmpty(parsedMD))
 						{
-							sw.WriteLine(result);
+							sw.WriteLine(parsedMD);
 						}
-
 					}
 				}
-
+				// update result
+				result.ParsedMDFiles += 1;
 			}
+			return result;
 		}
 
 		private static string ParseDynamicTag(MarkdownPipeline pipeline, IEnumerable<string> files_md, string line)
@@ -205,7 +206,7 @@ namespace stasigen.Core
 			return string.Empty;
 		}
 
-		private static string GetFilename(GenerateCommand.Settings opt, string file)
+		private static string GetOutputFilename(string file, string intputpath, string outputpath)
 		{
 			// create new html output file
 			string newfn = Path.GetFileName(file);
@@ -224,15 +225,13 @@ namespace stasigen.Core
 			//							|___ css
 			//							|___ img
 
+			// create new filename
 			string curdir = System.IO.Path.GetDirectoryName(file);
-			string addondir = curdir.Replace(opt.InputPath, string.Empty); // remove 
+			string addondir = curdir.Replace(intputpath, outputpath); // replace the paths 
+			newfn = Path.Combine(addondir, newfn);
 
-			// settings: use output path
-			string newoutputdir = System.IO.Path.Combine(opt.OutputPath, addondir);
-			newfn = Path.Combine(newoutputdir, newfn);
-
+			// new filename directory
 			string newfndir = Path.GetDirectoryName(newfn);
-
 			if (!System.IO.Directory.Exists(newfndir))
 				System.IO.Directory.CreateDirectory(newfndir);
 

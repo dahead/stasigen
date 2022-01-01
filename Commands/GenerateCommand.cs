@@ -5,13 +5,11 @@ using stasigen.Core;
 
 namespace stasigen.Commands
 {
-
 	[Description("Generate output from scratch.")]
 	public sealed class GenerateCommand : Command<GenerateCommand.Settings>
 	{
 		public sealed class Settings : CommandSettings
 		{
-
 			[CommandOption("-p|--path")]
 			[Description("The path from where to import the Markdown files.")]
 			public string InputPath { get; set; }
@@ -29,8 +27,9 @@ namespace stasigen.Commands
 
 		public override int Execute(CommandContext context, Settings settings)
 		{
-			// SettingsDumper.Dump(settings);
-
+			// options: dump settings
+			if (settings.Verbosity > 0)
+				SettingsDumper.Dump(settings);
 
 			// is input path given?
 			if (string.IsNullOrEmpty(settings.InputPath))
@@ -46,13 +45,13 @@ namespace stasigen.Commands
 				return -1;
 			}
 
-
 			// Start generating output
-			Generator.Start(settings);
+			var result = Generator.Start(settings);
 
+			// options: result
 			if (settings.Verbosity > 0)
 			{
-				AnsiConsole.MarkupLine("[green]Done![/]");
+				AnsiConsole.MarkupLine($"[green]Done! Parsed {result.ParsedMDFiles} *.md files.[/]");
 			}
 
 			// todo: return something useful?

@@ -14,3 +14,10 @@ There seems to be an infinite number of these things, so here is another one.
 Thanks go out to:
 
 - xooxf the author of [Markdig](https://github.com/xoofx/markdig).
+
+
+## Todos?
+
+- Command? $navbar
+- Command? $posts.last(10)
+- Command? $posts.random(100)
