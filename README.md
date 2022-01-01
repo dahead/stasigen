@@ -12,7 +12,7 @@ The main purpose for this generator is to help myself document things during wor
 Occasionally I have some screenshots laying around which I want to combine with the notes. So I could either use something like Microsoft Word (no thanks) or a Website editor like "nvu", "Dreamweaver" or alike. But these seem to big for the task and I like it simple - so I created stasigen.
 
 With stasigen you can create a folder structure without any limitations, place your Markdown files, put some images here and there.
-To link files with images stasigen uses variables which get replaced with some values.
+To link files with images stasigen uses its own "commands" which get replaced with some values.
 
 ### Example:
 
@@ -20,7 +20,11 @@ To link files with images stasigen uses variables which get replaced with some v
 [css:main.css]
 ```
 
-Gets replaced with the HTML css stylesheet tag for.
+This command replaced with the HTML CSS stylesheet tag for.
+
+```
+<link rel="stylesheet" type="text/css" href="../css/main.css">
+```
 
 ## Features
 
