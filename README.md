@@ -14,22 +14,36 @@ Occasionally I have some screenshots laying around which I want to combine with 
 With stasigen you can create a folder structure without any limitations, place your Markdown files, put some images here and there.
 To link files with images stasigen uses its own "commands" which get replaced with some values.
 
-### Example:
+### Example 1:
 
 ``` 
 [css:main.css]
 ```
 
-This command replaced with the HTML CSS stylesheet tag for.
+This command inserts the HTML CSS stylesheet tag for the given stylesheet.
 
 ```
-<link rel="stylesheet" type="text/css" href="../css/main.css">
+<link rel="stylesheet" type="text/css" href="../../dh/css/main.css">
+```
+
+### Example 2:
+
+``` 
+[css:logo.png]
+```
+
+This command inserts the HTML img tag for the given image.
+
+```
+<img src="../../dh/img/logo.png" alt="logo.png" /></p>
+
 ```
 
 ## Features
 
 - Stupid simple. Creates HTML files out of Markdown files.
 - Open source, .NET Core Framework, written in C#
+- Dynamic image and css file integration
 
 ## Demo run
 
@@ -43,9 +57,13 @@ Thanks go out to:
 
 - xooxf the author of [Markdig](https://github.com/xoofx/markdig) the markdown parser I used.
 
-## Documentation
+## Compile / requirements
 
-will follow.
+This application requires mono or the .NET Framework 5 Core.
+
+```
+dotnet build && dotnet run
+```
 
 ## Todos?
 
