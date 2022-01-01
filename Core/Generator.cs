@@ -7,6 +7,7 @@ using System.IO;
 using Markdig;
 using stasigen.Commands;
 using Spectre.Console;
+using System.Text.RegularExpressions;
 //using Markdig.SyntaxHighlighting;
 
 namespace stasigen.Core
@@ -69,82 +70,131 @@ namespace stasigen.Core
 			headercontent = GetContent("header.md", pipeline, files);
 			footercontent = GetContent("footer.md", pipeline, files);
 
-			// thru each md file
+			List<string> files_to_parse_later = new List<string>();
+
+
 			foreach (var file in files_md)
 			{
-				// read content and split into single lines
-				string content = File.ReadAllText(file);
-				string[] lines = content.Split(Environment.NewLine);
-
-				// create new filename for output
 				string newfn = GetOutputFilename(file, opt.InputPath, opt.OutputPath);
+				string content = File.ReadAllText(file);
 
-				// convert markdown to html and write it in the output file
+				content = content.Replace("$header$", headercontent);
+				content = content.Replace("$footer$", footercontent);
+
+				// find all [$command:filename.extension]
+				string pattern = @"\[[^\]]*\]";
+
+				foreach (Match match in Regex.Matches(content, pattern))
+				{
+					if (match.Value.Contains("[css:"))
+					{
+						content = ParseCSSTag(files_css, newfn, content, match.Value);
+					}
+					if (match.Value.Contains("[img:"))
+					{
+						content = ParseImageTag(files_img, newfn, content, match.Value);
+					}
+					if (match.Value.Contains("[dynamic:"))
+					{
+						// content = content.Replace(match.Value, ParseDynamicTag(pipeline, files_md, content));
+					}
+
+					//content = content.Replace(item.Value, );
+				}
+
+
+
 				using (StreamWriter sw = File.CreateText(newfn))
 				{
-					// iterate through each line
-					// we could also just do: 
-					// var result = Markdown.ToHtml(content, pipeline);
-					for (int i = 0; i < lines.Length; i++)
-					{
-						// get current line
-						var currentline = lines[i];
-
-						// header
-						if (!string.IsNullOrEmpty(headercontent))
-						{
-							if ((currentline.ToLower().Contains("$header")))
-								currentline = currentline.Replace("$header", headercontent);
-						}
-
-						// footer
-						if (!string.IsNullOrEmpty(footercontent))
-						{
-							if ((currentline.ToLower().Contains("$footer")))
-								currentline = currentline.Replace("$footer", footercontent);
-						}
-
-						// dynamic: embed md file
-						if ((currentline.Contains("$dynamic:")))
-						{
-							var newline = ParseDynamicTag(pipeline, files_md, currentline);
-							if (!string.IsNullOrEmpty(newline))
-								currentline = newline;
-						}
-
-						// images
-						if ((currentline.Contains("$img:")))
-						{
-							var newline = ParseImageTag(files_img, newfn, currentline);
-							if (!string.IsNullOrEmpty(newline))
-								currentline = newline;
-						}
-
-						// css style: $css:main.css >>> <link rel="stylesheet" href="styles.css">
-						if ((currentline.Contains("$css:")))
-						{
-							var newline = ParseCSSTag(files_css, newfn, currentline);
-							if (!string.IsNullOrEmpty(newline))
-								currentline = newline;
-						}
-
-						// markdown
-						var parsedMD = Markdown.ToHtml(currentline, pipeline);
-
-						// output
-						if (opt.Verbosity != Verbosity.Quiet)
-							AnsiConsole.WriteLine($"HTML { currentline } >>> { file }");
-
-						// write only not empty strings to output (is this a good idea?)
-						if (!string.IsNullOrEmpty(parsedMD))
-						{
-							sw.WriteLine(parsedMD);
-						}
-					}
+					// markdown
+					var parsedMD = Markdown.ToHtml(content, pipeline);
+					sw.WriteLine(parsedMD);
 				}
-				// update result
-				result.ParsedMDFiles += 1;
+
+
+
+
 			}
+
+
+
+			// // thru each md file
+			// foreach (var file in files_md)
+			// {
+			// 	// read content and split into single lines
+			// 	string content = File.ReadAllText(file);
+			// 	string[] lines = content.Split(Environment.NewLine);
+
+			// 	// create new filename for output
+			// 	string newfn = GetOutputFilename(file, opt.InputPath, opt.OutputPath);
+
+			// 	// convert markdown to html and write it in the output file
+			// 	using (StreamWriter sw = File.CreateText(newfn))
+			// 	{
+			// 		// iterate through each line
+			// 		// we could also just do: 
+			// 		// var result = Markdown.ToHtml(content, pipeline);
+			// 		for (int i = 0; i < lines.Length; i++)
+			// 		{
+			// 			// get current line
+			// 			var currentline = lines[i];
+
+			// 			// header
+			// 			if (!string.IsNullOrEmpty(headercontent))
+			// 			{
+			// 				if ((currentline.ToLower().Contains("$header")))
+			// 					currentline = currentline.Replace("$header", headercontent);
+			// 			}
+
+			// 			// footer
+			// 			if (!string.IsNullOrEmpty(footercontent))
+			// 			{
+			// 				if ((currentline.ToLower().Contains("$footer")))
+			// 					currentline = currentline.Replace("$footer", footercontent);
+			// 			}
+
+			// 			// dynamic: embed md file
+			// 			if ((currentline.Contains("$dynamic:")))
+			// 			{
+			// 				var newline = ParseDynamicTag(pipeline, files_md, currentline);
+			// 				if (!string.IsNullOrEmpty(newline))
+			// 					currentline = newline;
+			// 			}
+
+			// 			// images
+			// 			if ((currentline.Contains("$img:")))
+			// 			{
+			// 				var newline = ParseImageTag(files_img, newfn, currentline);
+			// 				if (!string.IsNullOrEmpty(newline))
+			// 					currentline = newline;
+			// 			}
+
+			// 			// css style: $css:main.css >>> <link rel="stylesheet" href="styles.css">
+			// 			if ((currentline.Contains("$css:")))
+			// 			{
+			// 				var newline = ParseCSSTag(files_css, newfn, currentline);
+			// 				if (!string.IsNullOrEmpty(newline))
+			// 					currentline = newline;
+			// 			}
+
+			// 			// markdown
+			// 			var parsedMD = Markdown.ToHtml(currentline, pipeline);
+
+			// 			// output
+			// 			if (opt.Verbosity != Verbosity.Quiet)
+			// 				AnsiConsole.WriteLine($"HTML { currentline } >>> { file }");
+
+			// 			// write only not empty strings to output (is this a good idea?)
+			// 			if (!string.IsNullOrEmpty(parsedMD))
+			// 			{
+			// 				sw.WriteLine(parsedMD);
+			// 			}
+			// 		}
+			// 	}
+			// 	// update result
+			// 	result.ParsedMDFiles += 1;
+			// }
+
 			return result;
 		}
 
@@ -155,52 +205,66 @@ namespace stasigen.Core
 				var mdfn = Path.GetFileName(mdfile);
 				if (line.Contains(mdfn))
 				{
-					// line = line.Replace("$dynamic:", string.Empty); // remove "command"
 					var embed_content = File.ReadAllText(mdfile);
 					var embed_result = Markdown.ToHtml(embed_content, pipeline);
 					// AnsiConsole.WriteLine($"replacing line {line} with {embed_result} from {mdfile}");
-					// replace line
-					// line = embed_result;
 					return embed_result;
 				}
 			}
 			return line;
 		}
 
-		private static string ParseCSSTag(IEnumerable<string> files_css, string file, string line)
+		private static string ParseCSSTag(IEnumerable<string> files, string outputfilename, string content, string token)
 		{
-			foreach (var cssfile in files_css)
-			{
-				var cssfn = Path.GetFileName(cssfile);
-				if (line.Contains(cssfn))
-				{
-					line = line.Replace("$css:", string.Empty); // remove "command"
-					var pathrels = Path.GetRelativePath(Path.GetDirectoryName(file), Path.GetDirectoryName(cssfile)); // get relative path from current .md file to img-dir.
-					cssfn = cssfn.Replace(cssfn, $"{pathrels}/{cssfn}");
-					var csstag = $"<link rel='stylesheet' type='text/css' href='{cssfn}'>";
-					csstag = csstag.Replace("'", "\"");
-					// replace line
-					line = csstag;
-					return line;
-				}
-			}
-			return string.Empty;
+			// token: [css:main.css]
+			string fn = token.Substring(5, token.Length - 6);
+			var file = files.Where(t => t.EndsWith(fn)).FirstOrDefault();
+			var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
+			fn = fn.Replace(fn, $"{pathrels}/{fn}");
+			var tag = $"<link rel='stylesheet' type='text/css' href='{fn}'>".Replace("'", "\"");
+			content = content.Replace(token, tag);
+			return content;
+
+			// foreach (var file in files)
+			// {
+			// 	var shortfilename = Path.GetFileName(file);
+			// 	if (content.Contains(shortfilename))
+			// 	{
+			// 		// line = line.Replace(token, string.Empty); // remove "command"
+			// 		var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
+			// 		shortfilename = shortfilename.Replace(shortfilename, $"{pathrels}/{shortfilename}");
+			// 		var csstag = $"<link rel='stylesheet' type='text/css' href='{shortfilename}'>";  // formatting trick 1/2
+			// 		csstag = csstag.Replace("'", "\""); // formatting trick 2/2
+			// 		return csstag;
+			// 	}
+			// }
+			// return string.Empty;
 		}
 
-		private static string ParseImageTag(IEnumerable<string> files_img, string file, string line)
+		private static string ParseImageTag(IEnumerable<string> files, string outputfilename, string content, string token)
 		{
-			foreach (var imgfile in files_img)
-			{
-				var imgfn = Path.GetFileName(imgfile);
-				if (line.Contains(imgfn))
-				{
-					line = line.Replace("$img:", string.Empty); // remove "command"
-					var pathrels = Path.GetRelativePath(Path.GetDirectoryName(file), Path.GetDirectoryName(imgfile)); // get relative path from current .md file to img-dir.
-					line = line.Replace(imgfn, $"{pathrels}/{imgfn}");
-					return line;
-				}
-			}
-			return string.Empty;
+			// token: [img:logo.img]
+			string fn = token.Substring(5, token.Length - 6);
+			var file = files.Where(t => t.EndsWith(fn)).FirstOrDefault();
+			var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
+
+			fn = fn.Replace(fn, $"{pathrels}/{fn}");
+
+			content = content.Replace(token, $"!([]{fn}");
+			return content;
+
+			// foreach (var imgfile in files_img)
+			// {
+			// 	var imgfn = Path.GetFileName(imgfile);
+			// 	if (line.Contains(imgfn))
+			// 	{
+			// 		// line = line.Replace("$img", string.Empty); // remove "command"
+			// 		var pathrels = Path.GetRelativePath(Path.GetDirectoryName(file), Path.GetDirectoryName(imgfile)); // get relative path from current .md file to img-dir.
+			// 		line = line.Replace(imgfn, $"{pathrels}/{imgfn}");
+			// 		return line;
+			// 	}
+			// }
+			// return string.Empty;
 		}
 
 		private static string GetContent(string pattern, MarkdownPipeline pipeline, IEnumerable<string> files)

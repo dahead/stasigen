@@ -76,4 +76,4 @@ Nun starten wir endlessh:
 
 Anschliessend koennen wir via ``` netstat -tulpn ``` pruefen, ob sshd auf Port 2222 und endlessh auf Port 22 laeuft:
 
-![]($img:endlessh_syslog_netstat_tulpn.jpg)
+[img:endlessh_syslog_netstat_tulpn.jpg]

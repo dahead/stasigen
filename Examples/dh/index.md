@@ -1,7 +1,6 @@
 ﻿$header
 
 
-
 Letzte Artikel
 -------------
 {{ display_posts }}
