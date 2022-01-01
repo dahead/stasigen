@@ -68,7 +68,6 @@ namespace stasigen.Core
 			var files_md = files.Where(t => t.EndsWith(".md"));
 			var files_img = files.Where(t => t.EndsWith(".jpg") || t.EndsWith(".png"));
 			var files_css = files.Where(t => t.EndsWith(".css"));
-
 			// List<string> files_dynamic = new List<string>();
 
 			// generate html output for each md file
@@ -76,7 +75,6 @@ namespace stasigen.Core
 			{
 				string content = File.ReadAllText(file);
 				string newfn = GetOutputFilename(file, opt.InputPath, opt.OutputPath);
-
 				// ParseFile(file, files_css, files_img, opt, pipeline);
 
 				// find all [command] or [command:filename.extension]
@@ -89,12 +87,11 @@ namespace stasigen.Core
 					if (match.Value.Contains("[img:"))
 						content = ParseImageTag(files_img, newfn, content, match.Value);
 
+					// Problem: files imported with the dynamic tag also need to be parsed for img and css tags.
 					// todo: parse img and css tags (and maybe other tags in the future)
 					if (match.Value.Contains("[dynamic:"))
 						content = ParseDynamicTag(pipeline, files_md, content, match.Value);
 					// files_dynamic.Add(newfn);
-
-
 				}
 
 				// create new output file
@@ -140,25 +137,10 @@ namespace stasigen.Core
 			// token: [dynamic:main.md]
 			string fn = token.Substring(9, token.Length - 10);
 			var file = files.Where(t => t.EndsWith(fn)).FirstOrDefault();
-
 			var embed_content = File.ReadAllText(file);
 			var embed_result = Markdown.ToHtml(embed_content, pipeline);
-
 			content = content.Replace(token, embed_content);
 			return content;
-
-			// foreach (var mdfile in files_md)
-			// {
-			// 	var mdfn = Path.GetFileName(mdfile);
-			// 	if (line.Contains(mdfn))
-			// 	{
-			// 		var embed_content = File.ReadAllText(mdfile);
-			// 		var embed_result = Markdown.ToHtml(embed_content, pipeline);
-			// 		// AnsiConsole.WriteLine($"replacing line {line} with {embed_result} from {mdfile}");
-			// 		return embed_result;
-			// 	}
-			// }
-			// return line;
 		}
 
 		private static string ParseCSSTag(IEnumerable<string> files, string outputfilename, string content, string token)
@@ -171,21 +153,6 @@ namespace stasigen.Core
 			var tag = $"<link rel='stylesheet' type='text/css' href='{fn}'>".Replace("'", "\"");
 			content = content.Replace(token, tag);
 			return content;
-
-			// foreach (var file in files)
-			// {
-			// 	var shortfilename = Path.GetFileName(file);
-			// 	if (content.Contains(shortfilename))
-			// 	{
-			// 		// line = line.Replace(token, string.Empty); // remove "command"
-			// 		var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
-			// 		shortfilename = shortfilename.Replace(shortfilename, $"{pathrels}/{shortfilename}");
-			// 		var csstag = $"<link rel='stylesheet' type='text/css' href='{shortfilename}'>";  // formatting trick 1/2
-			// 		csstag = csstag.Replace("'", "\""); // formatting trick 2/2
-			// 		return csstag;
-			// 	}
-			// }
-			// return string.Empty;
 		}
 
 		private static string ParseImageTag(IEnumerable<string> files, string outputfilename, string content, string token)
@@ -194,38 +161,23 @@ namespace stasigen.Core
 			string imgfn = token.Substring(5, token.Length - 6);
 			var file = files.Where(t => t.EndsWith(imgfn)).FirstOrDefault();
 			var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
-
 			string fullimgfn = imgfn.Replace(imgfn, $"{pathrels}/{imgfn}");
-
 			content = content.Replace(token, $"![{imgfn}]({fullimgfn})");
 			return content;
-
-			// foreach (var imgfile in files_img)
-			// {
-			// 	var imgfn = Path.GetFileName(imgfile);
-			// 	if (line.Contains(imgfn))
-			// 	{
-			// 		// line = line.Replace("$img", string.Empty); // remove "command"
-			// 		var pathrels = Path.GetRelativePath(Path.GetDirectoryName(file), Path.GetDirectoryName(imgfile)); // get relative path from current .md file to img-dir.
-			// 		line = line.Replace(imgfn, $"{pathrels}/{imgfn}");
-			// 		return line;
-			// 	}
-			// }
-			// return string.Empty;
 		}
 
-		private static string GetContent(string pattern, MarkdownPipeline pipeline, IEnumerable<string> files)
-		{
-			var file_header = files.Where(t => t.Contains(pattern)).FirstOrDefault();
-			if (file_header != null)
-			{
-				var header_content = FileHelper.GetLines(file_header);
-				var result = string.Join("", header_content);
-				result = Markdown.ToHtml(result, pipeline);
-				return result;
-			}
-			return string.Empty;
-		}
+		// private static string GetContent(string pattern, MarkdownPipeline pipeline, IEnumerable<string> files)
+		// {
+		// 	var file_header = files.Where(t => t.Contains(pattern)).FirstOrDefault();
+		// 	if (file_header != null)
+		// 	{
+		// 		var header_content = FileHelper.GetLines(file_header);
+		// 		var result = string.Join("", header_content);
+		// 		result = Markdown.ToHtml(result, pipeline);
+		// 		return result;
+		// 	}
+		// 	return string.Empty;
+		// }
 
 		private static string GetOutputFilename(string file, string intputpath, string outputpath)
 		{
