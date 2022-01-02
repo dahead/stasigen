@@ -139,6 +139,10 @@ namespace stasigen.Core
 		// 	}
 		// }
 
+		// remember reach Dynamic-Tag + File Association
+		// so we can later...
+		// it would be better to previously know each of these associations.
+
 		private static string ParseDynamicTag(MarkdownPipeline pipeline, IEnumerable<string> files, string content, string token)
 		{
 			// token: [dynamic:main.md]
