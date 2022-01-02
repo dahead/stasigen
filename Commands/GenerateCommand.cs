@@ -18,9 +18,8 @@ namespace stasigen.Commands
 			[Description("The output path for the HTML files. If not specified, a folder called 'output' will be created in the input path.")]
 			public string OutputPath { get; set; }
 
-			[CommandOption("--createindex <VERBOSITY>")]
-			[Description("Creaets an index.html file with links to all processed Markdown files.")]
-			[TypeConverter(typeof(bool))]
+			[CommandOption("--createindex")]
+			[Description("Creates an index.html file with links to all processed Markdown files.")]
 			[DefaultValue(false)]
 			public bool CreateIndex { get; set; }
 
@@ -50,7 +49,7 @@ namespace stasigen.Commands
 			// options: result
 			if (settings.Verbosity > 0)
 			{
-				AnsiConsole.MarkupLine($"[green]Done! Parsed {result.ParsedMDFiles} *.md files.[/]");
+				AnsiConsole.MarkupLine($"[green]Done parsing!");
 			}
 
 			return 0;
