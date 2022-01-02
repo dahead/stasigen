@@ -144,6 +144,12 @@ namespace stasigen.Core
 			// token: [dynamic:main.md]
 			string fn = token.Substring(9, token.Length - 10);
 			var file = files.Where(t => t.EndsWith(fn)).FirstOrDefault();
+
+			if (string.IsNullOrEmpty(file))
+				return content;
+			if (!System.IO.File.Exists(file))
+				return content;
+
 			var embed_content = File.ReadAllText(file);
 			var embed_result = Markdown.ToHtml(embed_content, pipeline);
 			content = content.Replace(token, embed_content);
@@ -155,6 +161,8 @@ namespace stasigen.Core
 			// token: [css:main.css]
 			string fn = token.Substring(5, token.Length - 6);
 			var file = files.Where(t => t.EndsWith(fn)).FirstOrDefault();
+			if (string.IsNullOrEmpty(file))
+				return content;
 			var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
 			fn = fn.Replace(fn, $"{pathrels}/{fn}");
 			var tag = $"<link rel='stylesheet' type='text/css' href='{fn}'>".Replace("'", "\"");
@@ -167,6 +175,8 @@ namespace stasigen.Core
 			// token: [img:logo.img]
 			string imgfn = token.Substring(5, token.Length - 6);
 			var file = files.Where(t => t.EndsWith(imgfn)).FirstOrDefault();
+			if (string.IsNullOrEmpty(file))
+				return content;
 			var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(file)); // get relative path from current .md file to img-dir.
 			string fullimgfn = imgfn.Replace(imgfn, $"{pathrels}/{imgfn}");
 			content = content.Replace(token, $"![{imgfn}]({fullimgfn})");
