@@ -66,8 +66,8 @@ namespace stasigen.Core
 				opt.OutputPath = opt.OutputPath + "/";
 
 			// get the important files in separate lists
-			var files = FileHelper.GetFiles(opt.InputPath);
-			var files_md = files.Where(t => t.EndsWith(".md"));
+			var files = FileHelper.GetFiles(opt.InputPath).ToList();
+			var files_md = files.Where(t => t.EndsWith(".md")).ToList();
 
 			// generate html output for each md file
 			foreach (var file in files_md)
@@ -129,6 +129,9 @@ namespace stasigen.Core
 				return string.Empty;
 
 			var foundfile = files.Where(t => t.EndsWith(tag.Value)).FirstOrDefault();
+			if (string.IsNullOrEmpty(foundfile))
+				return string.Empty;
+
 			var pathrels = Path.GetRelativePath(Path.GetDirectoryName(outputfilename), Path.GetDirectoryName(foundfile)); // get relative path from current .md file to img-dir.
 
 			string filename = string.Empty;
@@ -146,8 +149,16 @@ namespace stasigen.Core
 					break;
 				case "DYNAMIC":
 					// import rendered Markdown
-					var fc = File.ReadAllText(foundfile);
-					result = Markdown.ToHtml(fc);
+					result = File.ReadAllText(foundfile);
+					// regex find tags
+					// recursive ParseTag() to resolve img and css and other tags...					
+					string pattern = @"\[[^\]]*\]"; // find all [command] or [command:filename.extension]
+					foreach (Match match in Regex.Matches(result, pattern))
+					{
+						result = ParseTag(files, outputfilename, result, match.Value);
+						content = content.Replace(match.Value, result);
+					}
+					result = Markdown.ToHtml(result);
 					break;
 			}
 

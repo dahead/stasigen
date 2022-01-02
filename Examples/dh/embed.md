@@ -6,4 +6,3 @@
 
 ### death loop?
 
-[dynamic:embed.md]
