@@ -36,6 +36,8 @@ namespace stasigen.Core
 			// retrieve full path instead of maybe relative paths like "./Examples"
 			var di = new System.IO.DirectoryInfo(opt.InputPath);
 			opt.InputPath = di.FullName;
+
+			// make sure we deal with full paths
 			if (!opt.InputPath.EndsWith("/"))
 				opt.InputPath = opt.InputPath + "/";
 
@@ -47,19 +49,18 @@ namespace stasigen.Core
 
 			// output path defaults
 			if (string.IsNullOrEmpty(opt.OutputPath))
-			{
 				opt.OutputPath = System.IO.Path.Combine(opt.InputPath, "output");
-			}
 
 			if (!System.IO.Directory.Exists(opt.OutputPath))
 			{
 				// option
 				if (opt.Verbosity > 0)
 					AnsiConsole.WriteLine($"Creating output path {opt.OutputPath}.");
-
+				// create output path
 				System.IO.Directory.CreateDirectory(opt.OutputPath);
 			}
 
+			// make sure we deal with full paths
 			if (!opt.OutputPath.EndsWith("/"))
 				opt.OutputPath = opt.OutputPath + "/";
 
@@ -87,11 +88,17 @@ namespace stasigen.Core
 					if (match.Value.Contains("[img:"))
 						content = ParseImageTag(files_img, newfn, content, match.Value);
 
-					// Problem: files imported with the dynamic tag also need to be parsed for img and css tags.
-					// todo: parse img and css tags (and maybe other tags in the future)
-					if (match.Value.Contains("[dynamic:"))
-						content = ParseDynamicTag(pipeline, files_md, content, match.Value);
-					// files_dynamic.Add(newfn);
+					// if (match.Value.Contains("[header:"))
+					// 	content = ParseImageTag(files_img, newfn, content, match.Value);
+
+					// unnecessary? for what do I need embedding of other files? wouldn't a link suffice?
+					// but: header and footer tags were pretty neat...
+					//
+					// // Problem: files imported with the dynamic tag also need to be parsed for img and css tags.
+					// // todo: parse img and css tags (and maybe other tags in the future)
+					// if (match.Value.Contains("[dynamic:"))
+					// 	content = ParseDynamicTag(pipeline, files_md, content, match.Value);
+					// // files_dynamic.Add(newfn);
 				}
 
 				// create new output file

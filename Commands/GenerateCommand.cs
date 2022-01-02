@@ -24,7 +24,7 @@ namespace stasigen.Commands
 			public string InputPath { get; set; }
 
 			[CommandArgument(1, "[output]")]
-			[Description("The output path for the HTML files.")]
+			[Description("The output path for the HTML files. If not specified, a folder called 'output' will be created in the input path.")]
 			public string OutputPath { get; set; }
 
 			[CommandOption("-v|--verbosity <VERBOSITY>")]
