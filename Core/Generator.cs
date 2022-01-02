@@ -79,9 +79,7 @@ namespace stasigen.Core
 				{
 					var result = ParseTag(files, newfn, content, match.Value);
 					if (!string.IsNullOrEmpty(result))
-					{
 						content = content.Replace(match.Value, result);
-					}
 				}
 
 				// create new output file
@@ -143,15 +141,14 @@ namespace stasigen.Core
 					filename = $"{pathrels}/{tag.Value}";
 					result = $"<link rel='stylesheet' type='text/css' href='{filename}'>".Replace("'", "\"");
 					break;
+
 				case "IMG":
 					filename = $"{pathrels}/{tag.Value}";
 					result = $"![{tag.Value}]({filename})";
 					break;
+
 				case "DYNAMIC":
-					// import rendered Markdown
 					result = File.ReadAllText(foundfile);
-					// regex find tags
-					// recursive ParseTag() to resolve img and css and other tags...					
 					string pattern = @"\[[^\]]*\]"; // find all [command] or [command:filename.extension]
 					foreach (Match match in Regex.Matches(result, pattern))
 					{

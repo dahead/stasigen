@@ -3,8 +3,7 @@
 
 # stasigen - static site generator
 
-stasigen is short for static site generator. And yes, this is yet another static site generator.
-There seems to be an infinite number of these things, so here is another one.
+stasigen creates HTML files from Markdown files with dynamic image linking.
 
 ## Features
 
@@ -63,7 +62,7 @@ stasigen generate ~/dh/Websites/static
 
 Thanks go out to:
 
-- xooxf the author of [Markdig](https://github.com/xoofx/markdig) the markdown parser I used.
+- xoofx the author of [Markdig](https://github.com/xoofx/markdig) the markdown parser I used.
 
 ## Compilation
 
@@ -78,3 +77,4 @@ dotnet build && dotnet run
 - Command? $navbar
 - Command? $posts.last(10)
 - Command? $posts.random(100)
+- Command for todos? [cmd:createreminder(20.01.2022_14:00)]
