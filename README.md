@@ -3,7 +3,7 @@
 
 # stasigen - static site generator
 
-stasigen creates HTML files from Markdown files with dynamic image linking.
+stasigen creates HTML files from Markdown files with dynamic image linking and some other nicities.
 
 ## Features
 
